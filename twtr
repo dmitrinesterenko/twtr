@@ -1,0 +1,49 @@
+#!/bin/sh
+
+usage() {
+    cat << EOF
+usage $0 [options] search_term
+
+This program searches twitter for the given search_term.
+
+OPTIONS:
+        -h  this help
+
+Send bugs and such to chris@sencjw.com or whinge about #twtr on twitter
+
+EOF
+}
+
+if [ -z $1 ]
+then
+    usage
+    exit 1
+fi
+
+while getopts "ch" OPTION
+do
+    case $OPTION in
+	h)
+	    usage
+	    exit 1
+	    ;;
+	?)
+	    usage
+	    exit 1
+	    ;;
+    esac
+done
+
+curl http://search.twitter.com/search.json?q="$1" 2>/dev/null | \
+JSON.sh | \
+awk '/"results",[0-9]+,"from_user"/ { 
+             s=gsub("\"","")
+             printf $2 
+     }
+     /"results",[0-9]+,"text"/ {
+             s = ""
+             for (i=2; i<=NF; i++)
+                     s=s" "$i
+             print s
+     }
+'
