@@ -19,4 +19,5 @@ in your path.
 TODO
 ----
 
+Implement V1.1 of the twitter API
 Implement some color
